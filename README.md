@@ -1,5 +1,8 @@
 # vlm
 
+I will blog about updates and considerations to the design of this repo here:
+https://medium.com/@ammpersonal77
+
 Learning language models, causal LM, and language model fine tuning.
 
 Just for fun, let's also do MULTIMODAL language models, since we love a challenge!
