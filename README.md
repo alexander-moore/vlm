@@ -15,4 +15,7 @@ Multimodal VLM for now:
 
 - Experiment with new position encodings, combinations of sequence encoding and image encoding. Should an image inside a text block get a position encoding as well as an image (xy?) position embedding summed?
 
-![Flamingo_screenshot - multimodal motivation](images/flamingo_ss.png)
+![Flamingo_screenshot - multimodal motivation](imgs/flamingo_ss.png)
+
+
+![General Architecture](imgs/my_arch.png)
