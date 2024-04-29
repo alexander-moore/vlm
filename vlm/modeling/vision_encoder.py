@@ -10,48 +10,40 @@ from transformers import ViTImageProcessor, ViTForImageClassification
 from PIL import Image
 import requests
 
-def get_image_encoder():
-    processor = ViTImageProcessor.from_pretrained('google/vit-base-patch16-224')
-    model = ViTForImageClassification.from_pretrained('google/vit-base-patch16-224')
-            
+def get_image_encoder(image_encoder_str, peft = False):
+    processor = ViTImageProcessor.from_pretrained(image_encoder_str)
+    model = ViTForImageClassification.from_pretrained(image_encoder_str)
+    
+    if peft:
+        
+        from peft import get_peft_config, get_peft_model, LoraConfig, TaskType
+        
+        peft_config = LoraConfig(
+            task_type=None, inference_mode=False, r=8, 
+            lora_alpha=32, lora_dropout=0.1, target_modules=['dense']
+        )
+
+        model = get_peft_model(model, peft_config)
+        model.print_trainable_parameters()
+    
+    else:
+        model.requires_grad = False
+        
     return processor, model
     
 if __name__ == '__main__':
     """
     Test image encoder, verify encoded size
     """
+    #url = 'http://images.cocodataset.org/val2017/000000039769.jpg'
+    #image = Image.open(requests.get(url, stream=True).raw)
+    image = Image.open('/data/coco2017/val2017/000000187990.jpg')
+    
+    processor, model = get_image_encoder('google/vit-base-patch16-224', peft = True)
         
-    
-
-    url = 'http://images.cocodataset.org/val2017/000000039769.jpg'
-    image = Image.open(requests.get(url, stream=True).raw)
-
-    processor = ViTImageProcessor.from_pretrained('google/vit-base-patch16-224')
-    model = ViTForImageClassification.from_pretrained('google/vit-base-patch16-224')
-    
-    print(processor, model)
-    
-    for name, parameter in model.named_parameters():
-        #print(name, parameter.requires_grad)
-        parameter.requires_grad = False
-        
-    print('image', type(image))
     inputs = processor(images=image, return_tensors="pt")
-    print('processed inputs', inputs['pixel_values'].shape)
     outputs = model(**inputs, output_hidden_states = True)
     
-    # for tens in outputs.hidden_states:
-    #     print(tens.shape)
-    
-    #print(outputs)
     embeddings = outputs.hidden_states[-1]
     print('made embedings', embeddings.shape)
-    
-    # Token projection (trainable)
-    image_tokenizer = ImageTokenizer(768, 256)
-    
-    print(image_tokenizer, embeddings.shape)
-    tokenized_embeddings = image_tokenizer(embeddings)
-    print('tokenzied embeddings', tokenized_embeddings.shape)
-    
     
