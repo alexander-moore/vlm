@@ -14,3 +14,5 @@ Multimodal VLM for now:
 -- In the LLaMA literature this is cited as prefix-content-suffix frmo another publication
 
 - Experiment with new position encodings, combinations of sequence encoding and image encoding. Should an image inside a text block get a position encoding as well as an image (xy?) position embedding summed?
+
+![Flamingo_screenshot - multimodal motivation](images/flamingo_ss.png)
