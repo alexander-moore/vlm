@@ -1,7 +1,9 @@
-# vlm
+# Multimodal LLMs from Scratch
 
 I will blog about updates and considerations to the design of this repo here:
 https://medium.com/@ammpersonal77
+
+Multimodal LLMs are an exciting new direction for multimodal AI research. Multimodality for LLMs come from utilizing a pretrained LLM in conjunction with a pretrained domain encoder (for example, an image encoder). A new untrained adapter module translates from the image encoder embedding space to the LLM token language embedding space. This system is trained end-to-end for the "domain tokenizer" / "adapter" component to succesfully translate between the data domain and language space to give the LLM multimodal understanding with no need to fine tune the extremely heavyweight LLM backbone. We also add PEFT components and experiment with adapter design, training schema, and eventually end-to-end multimodality - read the blog for more.
 
 Learning language models, causal LM, and language model fine tuning.
 
