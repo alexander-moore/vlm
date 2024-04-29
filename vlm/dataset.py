@@ -38,39 +38,10 @@ import matplotlib.pyplot as plt
 import warnings
 import random
 from torch.utils.data import Dataset
-
-# with warnings.catch_warnings():
-#     warnings.simplefilter('ignore')
-    
-#     ds = load_dataset("lambdalabs/pokemon-blip-captions")
-#     ds
-
-# idx = random.randint(0, 40)
-
-# example = ds['train'][idx]
-
-# plt.imshow(example['image'])
-# plt.show()
-
-#print(exampl#e)
-
-def get_coco_dataset():
-    """
-    get image captions dataset - use this as train
-    """
-    import fiftyone
-    dataset = fiftyone.zoo.load_zoo_dataset(
-        "coco-2017",
-        split="validation",
-        label_types=["captioons"],
-        max_samples=50,
-    )
-    
-
-    # Visualize the dataset in the FiftyOne App
-    #session = fiftyone.launch_app(dataset)
-    
-    return dataset
+import torchvision.datasets as dset
+import torch.nn as nn
+from torchvision.transforms import ToTensor, Compose, Resize
+from random import choice
 
 def get_pokemon_dataset():
     """
@@ -78,57 +49,54 @@ def get_pokemon_dataset():
     """
     return load_dataset("lambdalabs/pokemon-blip-captions")
 
-import torch
-import fiftyone.utils.coco as fouc
-from PIL import Image
-class FiftyOneTorchDataset(torch.utils.data.Dataset):
-    """A class to construct a PyTorch dataset from a FiftyOne dataset.
-    
-    Args:
-        fiftyone_dataset: a FiftyOne dataset or view that will be used for training or testing
-        transforms (None): a list of PyTorch transforms to apply to images and targets when loading
-        gt_field ("ground_truth"): the name of the field in fiftyone_dataset that contains the 
-            desired labels to load
-        classes (None): a list of class strings that are used to define the mapping between
-            class names and indices. If None, it will use all classes present in the given fiftyone_dataset.
+def get_coco_dataset(mode = 'train'):
     """
-
-    def __init__(
-        self,
-        fiftyone_dataset,
-    ):
-        self.samples = fiftyone_dataset
-        self.img_paths = self.samples.values("filepath")
-
-    def __getitem__(self, idx):
-        img_path = self.img_paths[idx]
-        sample = self.samples[img_path]
-        metadata = sample.metadata
-        img = Image.open(img_path).convert("RGB")
+    Abcd
+    """
+    coco_dataset = dset.CocoDetection(root = f'/data/coco2017/{mode}2017',
+                                        annFile = f'/data/coco2017/annotations/captions_{mode}2017.json'
+                                        )
+    return Coco_Wrapper(coco_dataset)
+    
+class Coco_Wrapper(Dataset):
+    def __init__(self, coco_dataset):
+        self.dataset = coco_dataset
+        #self.transforms = Compose(ToTensor(), Resize((256,256), antialias=True))
+        self.totensor = ToTensor()
+        self.resize = Resize((256, 256), antialias=True)
+        self.len = len(coco_dataset)
         
-        print(img_path, sample, metadata)
-        
-        if self.transforms is not None:
-            img, target = self.transforms(img, target)
-            
-        print(img.shape)
-
-        return img, target
-
     def __len__(self):
-        return len(self.img_paths)
-
-    def get_classes(self):
-        return self.classes
+        return self.len
+    
+    def __getitem__(self, idx):
+        """
+        Get and transform items
+        """
+        img, target = self.dataset[idx]
+        image = self.totensor(img)
+        #image = self.resize(image)
+        
+        caption = choice(target)['caption']
+        
+        sample = {'image': image,
+                  'caption': caption}
+        return sample
+        
+        
 
 from torch.utils.data import DataLoader
 if __name__ == '__main__':
+    """
+    This function is used to test datasets returns the correct
+    """
     # Load a test dataset
     dataset = get_coco_dataset()
-    dataset = FiftyOneTorchDataset(dataset)
-    dataloader = DataLoader(dataset, batch_size = 1)
     
-    print(dataset, dir(dataset))
+    batch = dataset[0]
+    print(batch['image'].shape, batch['caption'])
     
-    item = next(iter(dataloader))
-    print(item)
+    dataloader = DataLoader(dataset, batch_size = 2)
+    batch = next(iter(dataloader))
+    print(batch['image'].shape, batch['caption'])
+    
