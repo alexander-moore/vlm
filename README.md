@@ -16,6 +16,8 @@ Multimodal VLM for now:
 - Experiment with new position encodings, combinations of sequence encoding and image encoding. Should an image inside a text block get a position encoding as well as an image (xy?) position embedding summed?
 
 ![Flamingo_screenshot - multimodal motivation](imgs/flamingo_ss.png)
+*The [Flamingo](https://arxiv.org/abs/2204.14198) Authors motivate the usage of multimodal (interwoven vision and text) language models as few-shot inference models. Imagine training a seperate model for each of these tasks!* :fearful:
 
 
 ![General Architecture](imgs/mmllm.png)
+*Here we share a general approach to multimodal langauge models with text output. Special tokens are added to the language model tokenizer, and end-to-end finetuning adapts the "image tokenizer" module to translate visual information for the language model.*
