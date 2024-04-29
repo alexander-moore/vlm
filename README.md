@@ -17,6 +17,14 @@ Multimodal VLM for now:
 
 - Experiment with new position encodings, combinations of sequence encoding and image encoding. Should an image inside a text block get a position encoding as well as an image (xy?) position embedding summed?
 
+- notes:
+- - two way attention image and text? this assumes structured input, though?
+  -   i think losing interwoven text and image would be fine, in order to use two-way attention as an adapter
+  -     rather than as an llm replacement - though this would work im sure.
+  -      maybe an alternate multimodal approach is just two-way attention over image and text. consider!
+  - Qformer (blip) https://huggingface.co/docs/transformers/main/en/model_doc/blip-2#transformers.Blip2QFormerModel
+  -   just look into this as an adapter model - again not sure about requirement for structured input
+
 ![Flamingo_screenshot - multimodal motivation](imgs/flamingo_ss.png)
 
 *The [Flamingo](https://arxiv.org/abs/2204.14198) Authors motivate the usage of multimodal (interwoven vision and text) language models as few-shot inference models. Imagine training a seperate model for each of these tasks!* :fearful:
