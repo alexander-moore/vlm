@@ -18,4 +18,4 @@ Multimodal VLM for now:
 ![Flamingo_screenshot - multimodal motivation](imgs/flamingo_ss.png)
 
 
-![General Architecture](imgs/my_arch.png)
+![General Architecture](imgs/mmllm.png)
