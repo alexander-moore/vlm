@@ -110,6 +110,7 @@ class VisionLanguageModel(nn.Module):
 
         # Here, rather than simple concat, need to use the LLM text formatting, then break up the ids and embed them
         # then cat the embeddings which use the conversation formatting to the image embeddings to the suffix embeddings
+        # same thing below for generate - need to cat in correct positions and make sure we are using the provided chat templtae a la tici
         llm_input = torch.cat((self.start_vec, tokenized_image, self.end_vec, self.query_vec, caption_prefix), dim = 1)#.permute(0,2,1)
         
         # Forward with frozen llm
