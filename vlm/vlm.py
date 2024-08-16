@@ -107,6 +107,9 @@ class VisionLanguageModel(nn.Module):
         self.query_vec = self.query_vec.to(device)
         
         # Structure token sequence
+
+        # Here, rather than simple concat, need to use the LLM text formatting, then break up the ids and embed them
+        # then cat the embeddings which use the conversation formatting to the image embeddings to the suffix embeddings
         llm_input = torch.cat((self.start_vec, tokenized_image, self.end_vec, self.query_vec, caption_prefix), dim = 1)#.permute(0,2,1)
         
         # Forward with frozen llm
